@@ -7,6 +7,7 @@ import {NavigationContainer} from "@react-navigation/native";
 import SideDrawerRouter from "./router/SideDrawerRouter";
 import AirportList from "./pages/AirportList/AirportList";
 import FlightSearchResults from "./pages/FlightSearchResults/FlightSearchResults";
+import LoginPage from "./pages/Authentication/LoginPage";
 const Stack = createNativeStackNavigator();
 
 const App = () => {
@@ -21,6 +22,7 @@ const App = () => {
                 />
                 <Stack.Screen name="Select an airport" component={AirportList} />
                 <Stack.Screen name="Flight results" component={FlightSearchResults} />
+                <Stack.Screen name="Login" component={LoginPage} />
             </Stack.Navigator>
         </NavigationContainer>
     )
