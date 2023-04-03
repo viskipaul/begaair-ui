@@ -3,12 +3,12 @@ import {
     TouchableOpacity,
     Text,
     View,
-    Image, Platform,
+    Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from './FlightsBooking.styles';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {Button} from '@rneui/themed';
+import Button from '../../components/Button/Button';
 import AwesomeAlert from 'react-native-awesome-alerts';
 
 const FlightsBooking = ({navigation, route}) => {
@@ -103,15 +103,12 @@ const FlightsBooking = ({navigation, route}) => {
 
             <View style={styles.logoHeaderWrapper}>
                 <Button
-                    style={styles.searchButton.wrapper}
+                    style={styles.searchButton}
                     title="Search flights"
-                    icon={styles.searchButton.iconStyle}
-                    iconContainerStyle={styles.searchButton.iconContainerStyle}
-                    titleStyle={styles.searchButton.titleStyle}
-                    buttonStyle={styles.searchButton.buttonStyle}
-                    containerStyle={styles.searchButton.containerStyle}
-                    onPress={() => handleSearchFlights()}
-                />
+                    iconName="search"
+                    iconFolder="awesome5"
+                    onPress={() => handleSearchFlights()}/>
+
                 <AwesomeAlert
                     show={showErrorMessage}
                     showProgress={false}

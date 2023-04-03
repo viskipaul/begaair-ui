@@ -6,5 +6,11 @@ export default StyleSheet.create({
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    signInButton: {
+        marginTop: 30,
+    },
+    logOutButton: {
+        backgroundColor: 'red',
     }
 });
