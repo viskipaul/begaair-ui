@@ -11,7 +11,6 @@ const AirportList = ({navigation, route}) => {
     let prevArrival = route.params.prevArr;
 
     const selectAirport = (item) => {
-        console.log("params type: ", route.params.type);
         if(route.params.type === 'departure') {
             departure = item;
             arrival = prevArrival;

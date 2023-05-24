@@ -46,5 +46,11 @@ export default StyleSheet.create({
     },
     searchButton: {
         marginTop: 50,
+    },
+    unsignedContainer: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
     }
 });

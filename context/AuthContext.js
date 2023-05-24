@@ -7,11 +7,33 @@ export const AuthProvider = ({children}) => {
     const [isLoading, setIsLoading] = useState('false');
     const [userToken, setUserToken] = useState(null);
 
-    const login = () => {
-        setIsLoading(true);
-        setUserToken('ioiojlkad');
-        AsyncStorage.setItem('userToken', 'ioiojlkad');
-        setIsLoading(false);
+    const login = (email, password) => {
+        return fetch("https://identitymicroservice.azurewebsites.net/api/auth/Login", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: email,
+                password: password
+            }),
+        })
+            .then((response) => response.json())
+            .then((responseData) => {
+                if (responseData.hasOwnProperty('token')) {
+                    console.log(responseData['token']);
+                    setIsLoading(true);
+                    setUserToken(responseData['token']);
+                    AsyncStorage.setItem('userToken', responseData['token']);
+                    setIsLoading(false);
+                    return "ok";
+                } else if (responseData.hasOwnProperty('Error')) {
+                    console.log(responseData['Error']);
+                    return responseData['Error'];
+                }
+            });
+
     }
 
     const logout = () => {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
     TouchableOpacity,
     Text,
@@ -10,14 +10,23 @@ import styles from './FlightsBooking.styles';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import Button from '../../components/Button/Button';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import moment from 'moment';
+import {AuthContext} from "../../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const FlightsBooking = ({navigation, route}) => {
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
     const [flightDate, setFlightDate] = useState(new Date(Date.now()));
     const [showErrorMessage, setShowErrorMessage] = useState(false);
     const [message, setMessage] = useState('');
+    const [filteredFlights, setFilteredFlights] = useState([]);
+    const [userToken, setUserToken] = useState("");
 
     let errorMessage = '';
+
+    useEffect(() => {
+        getUserToken().then(result => setUserToken(result));
+    }, [])
 
     const showDatePicker = () => {
         setDatePickerVisibility(true);
@@ -29,6 +38,28 @@ const FlightsBooking = ({navigation, route}) => {
     const handleConfirmDate = (date) => {
         setFlightDate(new Date(date));
         hideDatePicker();
+    }
+
+    const getUserToken = async () => {
+        await AsyncStorage.getItem('userToken').then(result => console.log("USER TOKEN 111: ", result));
+        return await AsyncStorage.getItem('userToken');
+    }
+
+    const fetchFilteredFlights = () => {
+        return fetch(`https://ticketsmanagementmicroservice.azurewebsites.net/Flight/filteredFlights?departureLocation=${route.params.dep}&arrivalLocation=${route.params.arr}&departureTime=${moment(flightDate, "YYYY-MM-DD").toISOString()}`, {
+            headers: {
+                "Authorization": `Bearer ${userToken}`
+            }
+        })
+            .then((response) => response.json())
+            .then((responseData) => {
+                setFilteredFlights(responseData);
+                return responseData;
+            })
+            .catch((error) => {
+                console.error(error);
+                return error;
+            })
     }
 
     const handleSearchFlights = () => {
@@ -46,8 +77,31 @@ const FlightsBooking = ({navigation, route}) => {
             setMessage(errorMessage);
             setShowErrorMessage(true);
         } else {
-            navigation.navigate('Flight results');
+            fetchFilteredFlights().then(response => {
+                navigation.navigate('Flight results', {
+                    departure: route.params.dep,
+                    arrival: route.params.arr,
+                    date: flightDate.toLocaleDateString(),
+                    flights: response
+                });
+            })
+
         }
+    }
+
+    if(!userToken) {
+        return (
+            <View style={styles.unsignedContainer}>
+                <Text>Click the button below to sign in and start booking a flight.</Text>
+                <Button
+                    title="Sign in"
+                    onPress={() => navigation.navigate('Login')}
+                    iconName="login"
+                    iconFolder="material"
+                    style={styles.signInButton}
+                />
+            </View>
+        )
     }
 
     return (
